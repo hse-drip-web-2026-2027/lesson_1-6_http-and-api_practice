@@ -20,7 +20,14 @@
       "email": "elina@example.com",
       "topic": "Городская мастерская",
       "createdAt": "2026-10-10T09:45:00.000Z"
+    },
+    {
+      "id": "4",
+      "name": "Олово Практикант",
+      "email": "student@example.com",
+      "topic": "Городская мастерская",
+      "createdAt": "2026-10-11T16:30:00.000Z"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
-
