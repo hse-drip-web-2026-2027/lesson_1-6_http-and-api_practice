@@ -24,6 +24,28 @@ function setListState(state, message) {
     emptyState.hidden = !hasEmptyResult
 }
 
+function showRequestError(message) {
+    requestStatus.dataset.state = "error"
+    requestStatus.textContent = message
+}
+
+async function deleteApplication(application) {
+    try {
+        const response = await fetch(`${API_URL}/${application.id}`, {
+            method: "DELETE",
+        })
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+        }
+
+        await loadApplications()
+    } catch (error) {
+        console.error("Не удалось удалить заявку", error)
+        showRequestError("Не удалось удалить заявку. Проверьте API и повторите запрос.")
+    }
+}
+
 // Карточка уже подготовлена, чтобы практика не превратилась в верстку.
 // Обратите внимание: значения API попадают в DOM через textContent.
 function createApplicationCard(application) {
@@ -49,8 +71,18 @@ function createApplicationCard(application) {
     email.href = `mailto:${application.email}`
     email.textContent = application.email
 
+    const actions = document.createElement("div")
+    actions.className = "application-card__actions"
+
+    const deleteButton = document.createElement("button")
+    deleteButton.type = "button"
+    deleteButton.className = "button button--secondary button--danger"
+    deleteButton.textContent = "Удалить"
+    deleteButton.addEventListener("click", () => deleteApplication(application))
+
+    actions.append(deleteButton)
     heading.append(name, id)
-    card.append(heading, topic, email)
+    card.append(heading, topic, email, actions)
 
     return card
 }
