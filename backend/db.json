@@ -20,7 +20,28 @@
       "email": "elina@example.com",
       "topic": "Городская мастерская",
       "createdAt": "2026-10-10T09:45:00.000Z"
+    },
+    {
+      "id": "4",
+      "name": "Ваше имя",
+      "email": "student@example.com",
+      "topic": "Городская мастерская",
+      "createdAt": "2026-10-11T16:30:00.000Z"
+    },
+    {
+      "name": "аня",
+      "email": "ana@example.ru",
+      "topic": "Городская мастерская",
+      "createdAt": "2026-10-13T17:49:55.456Z",
+      "id": "i5X7AW6lCtE"
+    },
+    {
+      "name": "qwerty",
+      "email": "qwerty@qwerty",
+      "topic": "Личный сайт-портфолио",
+      "createdAt": "2026-10-13T17:50:51.575Z",
+      "id": "KSfwT-p4kUo"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
-
