@@ -4,6 +4,7 @@ const applicationList = document.querySelector("#application-list")
 const emptyState = document.querySelector("#empty-state")
 const requestStatus = document.querySelector("#request-status")
 const reloadButton = document.querySelector("#reload-button")
+const topicFilter = document.querySelector("#topic-filter")
 
 const applicationForm = document.querySelector("#application-form")
 const submitButton = document.querySelector("#submit-button")
@@ -73,13 +74,23 @@ function renderApplications(applications) {
     setListState("success", `Получено заявок: ${applications.length}`)
 }
 
+function getApplicationsUrl() {
+    const url = new URL(API_URL)
+
+    if (topicFilter.value) {
+        url.searchParams.set("topic", topicFilter.value)
+    }
+
+    return url
+}
+
 async function loadApplications() {
     setListState("loading", "Загружаем заявки…")
     reloadButton.disabled = true
 
     try {
         // 2.1
-        const response = await fetch(API_URL)
+        const response = await fetch(getApplicationsUrl())
         console.log("Request URL:", response.url)
 
         // 4.1
@@ -154,6 +165,7 @@ applicationForm.addEventListener("submit", async (event) => {
 })
 
 reloadButton.addEventListener("click", loadApplications)
+topicFilter.addEventListener("change", loadApplications)
 
 // Первый запрос выполняется сразу после загрузки страницы.
 loadApplications()
