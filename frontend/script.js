@@ -9,6 +9,11 @@ const topicFilter = document.querySelector("#topic-filter")
 const applicationForm = document.querySelector("#application-form")
 const submitButton = document.querySelector("#submit-button")
 const submitStatus = document.querySelector("#submit-status")
+const formTitle = document.querySelector("#form-title")
+const methodBadge = document.querySelector("#method-badge")
+const cancelEditButton = document.querySelector("#cancel-edit-button")
+
+let editingApplicationId = null
 
 // Готовая вспомогательная функция переключает состояния списка.
 // Во время практики вызывайте ее с одним из значений:
@@ -80,7 +85,16 @@ function createApplicationCard(application) {
     deleteButton.textContent = "Удалить"
     deleteButton.addEventListener("click", () => deleteApplication(application))
 
-    actions.append(deleteButton)
+    const editButton = document.createElement("button")
+    editButton.type = "button"
+    editButton.className = "button button--secondary"
+    editButton.textContent = "Редактировать"
+    editButton.addEventListener("click", () => {
+        setEditMode(application)
+        applicationForm.scrollIntoView({behavior: "smooth", block: "start"})
+    })
+
+    actions.append(editButton, deleteButton)
     heading.append(name, id)
     card.append(heading, topic, email, actions)
 
@@ -149,6 +163,30 @@ async function loadApplications() {
     }
 }
 
+function setEditMode(application) {
+    editingApplicationId = application.id
+
+    applicationForm.elements.name.value = application.name
+    applicationForm.elements.email.value = application.email
+    applicationForm.elements.topic.value = application.topic
+
+    formTitle.textContent = `Редактировать заявку #${application.id}`
+    methodBadge.textContent = "PATCH"
+    submitButton.textContent = "Сохранить изменения"
+    cancelEditButton.hidden = false
+
+    submitStatus.textContent = `Редактируется заявка #${application.id}`
+}
+
+function resetEditMode() {
+    editingApplicationId = null
+
+    formTitle.textContent = "Создать заявку"
+    methodBadge.textContent = "POST"
+    submitButton.textContent = "Отправить в API"
+    cancelEditButton.hidden = true
+}
+
 applicationForm.addEventListener("submit", async (event) => {
     event.preventDefault()
 
@@ -166,6 +204,33 @@ applicationForm.addEventListener("submit", async (event) => {
     }
 
     try {
+        if (editingApplicationId !== null) {
+            const response = await fetch(`${API_URL}/${editingApplicationId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: application.name,
+                    email: application.email,
+                    topic: application.topic,
+                }),
+            })
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`)
+            }
+
+            const updatedApplication = await response.json()
+            console.log("Обновлена заявка:", updatedApplication)
+
+            applicationForm.reset()
+            resetEditMode()
+            submitStatus.textContent = `Заявка #${updatedApplication.id} обновлена`
+            await loadApplications()
+            return
+        }
+
         // 5.2
         const response = await fetch(API_URL, {
             method: "POST",
@@ -196,8 +261,15 @@ applicationForm.addEventListener("submit", async (event) => {
     }
 })
 
+cancelEditButton.addEventListener("click", () => {
+    applicationForm.reset()
+    resetEditMode()
+    submitStatus.textContent = "Редактирование отменено. Форма снова в режиме создания."
+})
+
 reloadButton.addEventListener("click", loadApplications)
 topicFilter.addEventListener("change", loadApplications)
 
 // Первый запрос выполняется сразу после загрузки страницы.
 loadApplications()
+

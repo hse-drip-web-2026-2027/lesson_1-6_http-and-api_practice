@@ -89,9 +89,9 @@
           <div class="panel-heading">
             <div>
               <p class="panel-kicker">Новый запрос</p>
-              <h2>Создать заявку</h2>
+              <h2 id="form-title">Создать заявку</h2>
             </div>
-            <span class="method-badge">POST</span>
+            <span class="method-badge" id="method-badge">POST</span>
           </div>
 
           <label class="field">
@@ -127,9 +127,15 @@
             </select>
           </label>
 
-          <button class="button button--primary" id="submit-button" type="submit">
-            Отправить в API
-          </button>
+          <div class="form-actions">
+            <button class="button button--secondary" id="cancel-edit-button" type="button" hidden>
+              Отменить редактирование
+            </button>
+
+            <button class="button button--primary" id="submit-button" type="submit">
+              Отправить в API
+            </button>
+          </div>
 
           <p class="submit-status" id="submit-status" aria-live="polite">
             Заполните форму после подключения GET-запроса

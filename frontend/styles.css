@@ -355,6 +355,11 @@ select:focus-visible {
   border-color: var(--error);
 }
 
+.form-actions {
+  display: grid;
+  gap: 10px;
+}
+
 .empty-state {
   place-items: center;
   min-height: 260px;
